@@ -1,0 +1,10 @@
+.venv/
+pycache/
+data/
+*.p8
+*.pem
+.env
+profiles.yml
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
