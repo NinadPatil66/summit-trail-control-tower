@@ -1,0 +1,27 @@
+holiday_date,holiday_name,is_federal,is_peak_retail
+2024-05-27,Memorial Day,True,False
+2024-06-19,Juneteenth,True,False
+2024-07-04,Independence Day,True,False
+2024-09-02,Labor Day,True,False
+2024-10-14,Columbus Day,True,False
+2024-11-11,Veterans Day,True,False
+2024-11-28,Thanksgiving,True,True
+2024-11-29,Black Friday,False,True
+2024-12-02,Cyber Monday,False,True
+2024-12-25,Christmas Day,True,False
+2025-01-01,New Year's Day,True,False
+2025-01-20,Martin Luther King Jr. Day,True,False
+2025-02-17,Presidents' Day,True,False
+2025-05-26,Memorial Day,True,False
+2025-06-19,Juneteenth,True,False
+2025-07-04,Independence Day,True,False
+2025-09-01,Labor Day,True,False
+2025-10-13,Columbus Day,True,False
+2025-11-11,Veterans Day,True,False
+2025-11-27,Thanksgiving,True,True
+2025-11-28,Black Friday,False,True
+2025-12-01,Cyber Monday,False,True
+2025-12-25,Christmas Day,True,False
+2026-01-01,New Year's Day,True,False
+2026-01-19,Martin Luther King Jr. Day,True,False
+2026-02-16,Presidents' Day,True,False
