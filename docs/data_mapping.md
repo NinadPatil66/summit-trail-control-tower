@@ -29,3 +29,13 @@ Dropped
 
 M5 event and SNAP columns. Their dates don't match 2024 to 2026 after the shift; we build our own holiday and promo seed.
 
+
+DC locations
+
+DCCityZIPTime zone
+ONTOntario, CA91761America/Los_Angeles
+RNOReno, NV89502America/Los_Angeles
+DALDallas, TX75241America/Chicago
+ATLAtlanta, GA30336America/New_York
+CMHColumbus, OH43217America/New_York
+ABEAllentown, PA18106America/New_York
