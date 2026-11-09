@@ -1,0 +1,66 @@
+# Summit Trail generator settings. Every number the generator uses lives here.
+seed: 42
+
+history:
+  start: 2024-05-11
+  end: 2026-05-10
+
+paths:                      # relative to the repo root
+  m5_dir: data/raw
+  out_dir: data/generated
+  seeds_dir: dbt/seeds
+
+m5:
+  first_day: 1212           # d_1212 shifted forward 3,640 days = 2024-05-11
+  last_day: 1941            # d_1941 shifted forward 3,640 days = 2026-05-10
+  shift_days: 3640
+
+entities:
+  suppliers: 60
+  skus: 2500
+  customers: 400
+  kits: 200
+  crosswalk_merges: 25
+
+dcs:
+  - {dc_id: 1, dc_code: ONT, city: Ontario, state: CA, zip: "91761", timezone: America/Los_Angeles, m5_stores: [CA_1, CA_2]}
+  - {dc_id: 2, dc_code: RNO, city: Reno, state: NV, zip: "89502", timezone: America/Los_Angeles, m5_stores: [CA_3, CA_4]}
+  - {dc_id: 3, dc_code: DAL, city: Dallas, state: TX, zip: "75241", timezone: America/Chicago, m5_stores: [TX_1, TX_2]}
+  - {dc_id: 4, dc_code: ATL, city: Atlanta, state: GA, zip: "30336", timezone: America/New_York, m5_stores: [TX_3]}
+  - {dc_id: 5, dc_code: CMH, city: Columbus, state: OH, zip: "43217", timezone: America/New_York, m5_stores: [WI_1, WI_2]}
+  - {dc_id: 6, dc_code: ABE, city: Allentown, state: PA, zip: "18106", timezone: America/New_York, m5_stores: [WI_3]}
+
+master_changes:
+  extract_every_days: 91    # one full extract per quarter for the backfill
+  pct_skus_cost_change: 0.10
+  cost_change_pct: [3, 12]
+  pct_suppliers_tier_change: 0.05
+
+planted:
+  supplier_lead_time_drift: {enabled: true, supplier: SUP-017, start_month: 15, increase_pct: 40}
+  carrier_storm_delays:     {enabled: true, carrier: CR-3, region: SOUTHEAST, extra_days: [2, 5]}
+  uom_bug:                  {enabled: true, dc: DAL, department: HOME_2, start: 2025-09-01, weeks: 6}
+  promo_spikes:             {enabled: true, skus: 50, multiplier: 2.5, windows: 12, window_days: 7}
+  dock_to_stock_slowdown:   {enabled: true, dc: ATL, start_month: 20, factor: 2.0}
+  stale_invoice_cost:       {enabled: true, rate: 0.03}
+
+traps:
+  duplicate_rate: 0.015
+  late_event_rate: 0.03
+  late_event_max_hours: 72
+  schema_drift_month: 18
+  orphan_customer_rate: 0.005
+  impossible_sequence_rate: 0.004
+  note_languages: {en: 0.80, es: 0.15, fr: 0.05}
+
+text:
+  supplier_emails: 3000
+  carrier_notes: 20000
+  return_comments: 10000
+
+invoices:
+  count: 150
+
+live:
+  wms_events_per_file: 120
+  tms_events_per_file: 40

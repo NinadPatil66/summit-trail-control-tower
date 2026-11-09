@@ -1,0 +1,18 @@
+-- 05_snapshots_and_tracking.sql
+-- Builds:  ERP_SIM.INVENTORY_DAILY (SKU x DC x day, about 11M rows)
+--          ERP_SIM.TRACKING_EVENTS (about 8M rows)
+-- Reads:   ERP_SIM.WMS_MOVEMENTS, ERP_SIM.SALES_ORDER_LINES, carrier extract,
+--          weather share (daily precipitation by ZIP), ERP_SIM.GEN_CONFIG
+-- Applies: CR-3 deliveries to Southeast (ATL-region) customers take 2 to 5 extra days
+--          on stormy days (cause 2); 0.4% of shipments get DELIVERED before PICKED_UP
+-- Steps:
+--   1. On-hand per SKU, DC and day = running SUM of signed movement quantities
+--      (dedupe events first, and use true eaches, so the snapshot shows the real stock)
+--   2. Group order lines into shipments and assign a carrier by DC and mode
+--   3. Transit days by carrier and lane; for CR-3 to ATL-region customers on days with
+--      heavy precipitation at the destination ZIP, add 2 to 5 days
+--   4. Emit PICKED_UP, IN_TRANSIT (scan array built with ARRAY_AGG), OUT_FOR_DELIVERY and
+--      DELIVERED or EXCEPTION, with event_epoch_ms times
+--   5. For 0.4% of shipments, move DELIVERED before PICKED_UP
+-- Check:   CR-3 late rate to ATL-region customers spikes only on storm days;
+--          no negative on-hand in the snapshot

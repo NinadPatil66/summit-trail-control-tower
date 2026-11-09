@@ -1,0 +1,18 @@
+-- 03_purchase_orders.sql
+-- Builds:  ERP_SIM.PO_LINES, ERP_SIM.PO_RECEIPTS (about 45K PO lines over two years)
+-- Reads:   ERP_SIM.DAILY_DEMAND, product extracts (primary_supplier_id, eaches_per_case, unit_cost),
+--          supplier extracts (promised_lead_time_days), ERP_SIM.GEN_CONFIG
+-- Applies: SUP-017 actual lead time +40% from month 15 (cause 1);
+--          about 1% of lines cancelled, then reinstated a few days later
+-- Steps:
+--   1. Simple version: order each SKU-DC on a fixed weekly cycle, sized to cover the next
+--      lead time + 14 days of demand, rounded up to full cases
+--      (stretch goal: reorder-point logic with a recursive CTE)
+--   2. Send each PO line to the SKU's primary supplier at the unit cost valid on the PO date
+--   3. promised_date = po_date + promised_lead_time_days
+--   4. Actual receipt date = promised date +/- a few days of noise;
+--      for SUP-017 from month 15, lead time x1.4
+--   5. Mark about 1% of lines CANCELLED, then add a REINSTATED status row 2 to 5 days later
+--   6. PO_RECEIPTS: receipt_ts at the dock, qty_received (about 3% of lines short)
+-- Check:   about 60 PO lines a day; SUP-017 average lead time jumps about 40% at month 15
+--          while other suppliers stay flat

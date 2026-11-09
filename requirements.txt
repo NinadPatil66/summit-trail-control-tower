@@ -1,0 +1,17 @@
+dbt-core>=1.10,<2.0
+dbt-snowflake>=1.10,<2.0
+snowflake-cli
+snowflake-snowpark-python
+snowflake-ml-python
+faker
+numpy
+pandas
+pyarrow
+pyyaml
+reportlab
+boto3
+kaggle
+sqlfluff
+sqlfluff-templater-dbt
+pre-commitpytest
+tzdata

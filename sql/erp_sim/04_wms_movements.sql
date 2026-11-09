@@ -1,0 +1,17 @@
+-- 04_wms_movements.sql
+-- Builds:  ERP_SIM.WMS_MOVEMENTS (one JSON event per row in a VARIANT column, about 60M rows)
+-- Reads:   ERP_SIM.SALES_ORDER_LINES, ERP_SIM.PO_RECEIPTS, product extract, DC time zones, ERP_SIM.GEN_CONFIG
+-- Applies: DAL HOME_2 sent in cases, not eaches, for 6 weeks from 2025-09-01 (cause 3);
+--          ATL dock-to-stock time x2 from month 20 (cause 5);
+--          lot_number + handling_unit from month 18 (schema drift); 1.5% duplicates; 3% late
+-- Steps:
+--   1. RECEIPT and PUTAWAY events from PO_RECEIPTS;
+--      putaway = receipt + dock-to-stock hours (x2 at ATL from month 20)
+--   2. PICK and PACK events from SALES_ORDER_LINES
+--   3. TRANSFER, ADJUST and CYCLE_COUNT events at small rates
+--   4. Build each event with OBJECT_CONSTRUCT, using the same fields as the live files;
+--      event_ts in DC local time with offset (CONVERT_TIMEZONE)
+--   5. Apply the UOM bug and schema drift by date
+--   6. UNION ALL a 1.5% copy (same event_id); give 3% of events a load_ts 1 to 72 hours after event_ts
+-- Check:   duplicate event_ids near 1.5%; DAL HOME_2 quantities drop by eaches_per_case
+--          inside the bug window; drift fields appear only from month 18

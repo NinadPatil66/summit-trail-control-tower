@@ -1,0 +1,13 @@
+-- 02_sales_order_lines.sql
+-- Builds:  ERP_SIM.SALES_ORDER_LINES (one row per order line, about 18M rows)
+-- Reads:   ERP_SIM.DAILY_DEMAND, customer extracts (created_at, home_dc_id), sku_crosswalk, ERP_SIM.GEN_CONFIG
+-- Applies: orphan customers (0.5%), old SKU codes before their merge date
+-- Steps:
+--   1. For each SKU, DC and day, split units into 1 to 6 order lines (GENERATOR + window functions)
+--   2. Give each line an order_line_id and group lines into orders (order_id)
+--   3. Assign a customer whose home DC matches and who exists on the order date
+--   4. For 0.5% of lines, assign a customer created after the order date (orphan trap)
+--   5. promised_date = order_date + 2 to 5 days
+--   6. Before a crosswalk effective_date, write old_sku_code instead of the new code
+-- Check:   about 25K lines a day; orphans near 0.5%; no NULL keys;
+--          SUM(qty) per SKU, DC and day equals DAILY_DEMAND

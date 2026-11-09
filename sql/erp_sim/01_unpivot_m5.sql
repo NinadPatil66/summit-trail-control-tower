@@ -1,0 +1,15 @@
+-- 01_unpivot_m5.sql
+-- Builds:  ERP_SIM.DAILY_DEMAND (one row per SKU, DC and day; about 2,500 x 6 x 730 = 11M rows)
+-- Reads:   RAW M5 sales table (wide: d_1 to d_1941), product extract (sku_code, m5_item_id),
+--          ERP_SIM.DC_STORE_MAP (10 rows, from docs/data_mapping.md), promotions seed, ERP_SIM.GEN_CONFIG
+-- Applies: 3,640-day date shift, stores summed into DCs, units x10, promo weeks x2.5 (cause 4)
+-- Steps:
+--   1. Pack each wide row into an object with OBJECT_CONSTRUCT(*), then LATERAL FLATTEN
+--      to get one row per item, store and day
+--   2. Keep days 1212 to 1941; demand_date = DATEADD(day, d - 1 + 3640, '2011-01-29')
+--   3. Join item to SKU through product.m5_item_id (keeps only the top 2,500 items)
+--      and store to DC through DC_STORE_MAP
+--   4. SUM units by SKU, DC and day, then multiply by units_multiplier (10)
+--   5. If the SKU is on promo that day (promotions seed), multiply by demand_multiplier (2.5)
+-- Check:   dates run 2024-05-11 to 2026-05-10; 730 days per SKU-DC;
+--          promo-week units are about 2.5x the same SKU's normal weeks
