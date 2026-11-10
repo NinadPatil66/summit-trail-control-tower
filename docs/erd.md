@@ -6,12 +6,12 @@ Which dimensions each fact joins to directly.
 
 |Fact|date|product|supplier|dc|customer|carrier|
 |-|-|-|-|-|-|-|
-|fct\_order\_lines|Yes|Yes||Yes|Yes||
-|fct\_shipments|Yes|||||Yes|
-|fct\_inventory\_movements|Yes|Yes||Yes|||
-|fct\_inventory\_daily|Yes|Yes||Yes|||
-|fct\_po\_lines|Yes|Yes|Yes|Yes|||
-|fct\_invoice\_match|Yes||Yes||||
+|fct_order_lines|Yes|Yes||Yes|Yes||
+|fct_shipments|Yes|||||Yes|
+|fct_inventory_movements|Yes|Yes||Yes|||
+|fct_inventory_daily|Yes|Yes||Yes|||
+|fct_po_lines|Yes|Yes|Yes|Yes|||
+|fct_invoice_match|Yes||Yes||||
 
 
 
@@ -21,127 +21,127 @@ Facts point at dimensions. SCD2 dimensions (product, supplier) have one row per 
 
 ```mermaid
 erDiagram
-    DIM\_DATE ||--o{ FCT\_ORDER\_LINES : "order\_date"
-    DIM\_PRODUCT ||--o{ FCT\_ORDER\_LINES : "product\_key"
-    DIM\_DC ||--o{ FCT\_ORDER\_LINES : "dc\_id"
-    DIM\_CUSTOMER ||--o{ FCT\_ORDER\_LINES : "customer\_id"
-    FCT\_ORDER\_LINES ||--o{ FCT\_SHIPMENTS : "order\_line\_id"
-    DIM\_CARRIER ||--o{ FCT\_SHIPMENTS : "carrier\_id"
-    DIM\_PRODUCT ||--o{ FCT\_INVENTORY\_MOVEMENTS : "product\_key"
-    DIM\_DC ||--o{ FCT\_INVENTORY\_MOVEMENTS : "dc\_id"
-    DIM\_PRODUCT ||--o{ FCT\_INVENTORY\_DAILY : "product\_key"
-    DIM\_DC ||--o{ FCT\_INVENTORY\_DAILY : "dc\_id"
-    DIM\_DATE ||--o{ FCT\_INVENTORY\_DAILY : "snapshot\_date"
-    DIM\_SUPPLIER ||--o{ FCT\_PO\_LINES : "supplier\_key"
-    DIM\_PRODUCT ||--o{ FCT\_PO\_LINES : "product\_key"
-    DIM\_DC ||--o{ FCT\_PO\_LINES : "dc\_id"
-    FCT\_PO\_LINES ||--o{ FCT\_INVOICE\_MATCH : "po\_line\_id"
-    DIM\_SUPPLIER ||--o{ FCT\_INVOICE\_MATCH : "supplier\_key"
-    DIM\_DATE ||--o{ FCT\_SHIPMENTS : "ship\_date"
-    DIM\_DATE ||--o{ FCT\_INVENTORY\_MOVEMENTS : "event\_date"
-    DIM\_DATE ||--o{ FCT\_PO\_LINES : "po\_date"
-    DIM\_DATE ||--o{ FCT\_INVOICE\_MATCH : "invoice\_date"
+    DIM_DATE ||--o{ FCT_ORDER_LINES : "order_date"
+    DIM_PRODUCT ||--o{ FCT_ORDER_LINES : "product_key"
+    DIM_DC ||--o{ FCT_ORDER_LINES : "dc_id"
+    DIM_CUSTOMER ||--o{ FCT_ORDER_LINES : "customer_id"
+    FCT_ORDER_LINES ||--o{ FCT_SHIPMENTS : "order_line_id"
+    DIM_CARRIER ||--o{ FCT_SHIPMENTS : "carrier_id"
+    DIM_PRODUCT ||--o{ FCT_INVENTORY_MOVEMENTS : "product_key"
+    DIM_DC ||--o{ FCT_INVENTORY_MOVEMENTS : "dc_id"
+    DIM_PRODUCT ||--o{ FCT_INVENTORY_DAILY : "product_key"
+    DIM_DC ||--o{ FCT_INVENTORY_DAILY : "dc_id"
+    DIM_DATE ||--o{ FCT_INVENTORY_DAILY : "snapshot_date"
+    DIM_SUPPLIER ||--o{ FCT_PO_LINES : "supplier_key"
+    DIM_PRODUCT ||--o{ FCT_PO_LINES : "product_key"
+    DIM_DC ||--o{ FCT_PO_LINES : "dc_id"
+    FCT_PO_LINES ||--o{ FCT_INVOICE_MATCH : "po_line_id"
+    DIM_SUPPLIER ||--o{ FCT_INVOICE_MATCH : "supplier_key"
+    DIM_DATE ||--o{ FCT_SHIPMENTS : "ship_date"
+    DIM_DATE ||--o{ FCT_INVENTORY_MOVEMENTS : "event_date"
+    DIM_DATE ||--o{ FCT_PO_LINES : "po_date"
+    DIM_DATE ||--o{ FCT_INVOICE_MATCH : "invoice_date"
 
-    FCT\_ORDER\_LINES {
-        int order\_line\_id PK
-        int order\_id
-        date order\_date FK
-        date promised\_date
-        int product\_key FK
-        int dc\_id FK
-        int customer\_id FK
-        int qty\_ordered
-        string line\_status
-        boolean is\_otif
+    FCT_ORDER_LINES {
+        int order_line_id PK
+        int order_id
+        date order_date FK
+        date promised_date
+        int product_key FK
+        int dc_id FK
+        int customer_id FK
+        int qty_ordered
+        string line_status
+        boolean is_otif
     }
-    FCT\_SHIPMENTS {
-        string shipment\_id PK
-        int order\_line\_id FK
-        int carrier\_id FK
-        date ship\_date FK
-        date committed\_date
-        timestamp delivered\_at
-        int qty\_shipped
+    FCT_SHIPMENTS {
+        string shipment_id PK
+        int order_line_id FK
+        int carrier_id FK
+        date ship_date FK
+        date committed_date
+        timestamp delivered_at
+        int qty_shipped
     }
-    FCT\_INVENTORY\_MOVEMENTS {
-        string event\_id PK
-        timestamp event\_ts\_utc
-        date event\_date FK
-        string event\_type
-        int product\_key FK
-        int dc\_id FK
-        int qty\_eaches
+    FCT_INVENTORY_MOVEMENTS {
+        string event_id PK
+        timestamp event_ts_utc
+        date event_date FK
+        string event_type
+        int product_key FK
+        int dc_id FK
+        int qty_eaches
     }
-    FCT\_INVENTORY\_DAILY {
-        int sku\_id PK
-        int dc\_id PK, FK
-        date snapshot\_date PK, FK
-        int product\_key FK
-        int on\_hand\_eaches
+    FCT_INVENTORY_DAILY {
+        int sku_id PK
+        int dc_id PK, FK
+        date snapshot_date PK, FK
+        int product_key FK
+        int on_hand_eaches
     }
-    FCT\_PO\_LINES {
-        int po\_line\_id PK
-        string po\_number
-        int supplier\_key FK
-        int product\_key FK
-        int dc\_id FK
-        date po\_date FK
-        date promised\_date
-        timestamp received\_at
-        int qty\_ordered
-        int qty\_received
-        number unit\_cost
+    FCT_PO_LINES {
+        int po_line_id PK
+        string po_number
+        int supplier_key FK
+        int product_key FK
+        int dc_id FK
+        date po_date FK
+        date promised_date
+        timestamp received_at
+        int qty_ordered
+        int qty_received
+        number unit_cost
     }
-    FCT\_INVOICE\_MATCH {
-        string invoice\_number PK
-        int line\_no PK
-        int po\_line\_id FK
-        int supplier\_key FK
-        date invoice\_date FK
-        int billed\_qty
-        number billed\_unit\_cost
-        string match\_status
+    FCT_INVOICE_MATCH {
+        string invoice_number PK
+        int line_no PK
+        int po_line_id FK
+        int supplier_key FK
+        date invoice_date FK
+        int billed_qty
+        number billed_unit_cost
+        string match_status
     }
-    DIM\_PRODUCT {
-        int product\_key PK "one row per version (SCD2)"
-        int sku\_id
-        string sku\_code
+    DIM_PRODUCT {
+        int product_key PK "one row per version (SCD2)"
+        int sku_id
+        string sku_code
         string category
-        number unit\_cost
-        date valid\_from
-        date valid\_to
-        boolean is\_current
+        number unit_cost
+        date valid_from
+        date valid_to
+        boolean is_current
     }
-    DIM\_SUPPLIER {
-        int supplier\_key PK "one row per version (SCD2)"
-        int supplier\_id
-        string supplier\_code
+    DIM_SUPPLIER {
+        int supplier_key PK "one row per version (SCD2)"
+        int supplier_id
+        string supplier_code
         string tier
-        int promised\_lead\_time\_days
-        date valid\_from
-        date valid\_to
+        int promised_lead_time_days
+        date valid_from
+        date valid_to
     }
-    DIM\_DC {
-        int dc\_id PK
-        string dc\_code
+    DIM_DC {
+        int dc_id PK
+        string dc_code
         string timezone
     }
-    DIM\_CUSTOMER {
-        int customer\_id PK
-        string customer\_type
-        int home\_dc\_id
-        date created\_at
+    DIM_CUSTOMER {
+        int customer_id PK
+        string customer_type
+        int home_dc_id
+        date created_at
     }
-    DIM\_CARRIER {
-        int carrier\_id PK
-        string carrier\_code
+    DIM_CARRIER {
+        int carrier_id PK
+        string carrier_code
         string mode
     }
-    DIM\_DATE {
-        date date\_day PK
-        int week\_of\_year
-        boolean is\_holiday
-        boolean is\_promo\_week
+    DIM_DATE {
+        date date_day PK
+        int week_of_year
+        boolean is_holiday
+        boolean is_promo_week
     }
 ```
 
